@@ -1,12 +1,10 @@
-using System;
 using System.Threading.Tasks;
 using System.Web.Http;
-
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using System.Web.Http.Description;
 using System.Net.Http;
-using System.Diagnostics;
+
 
 namespace Microsoft.Bot.Sample.LuisBot
 {
