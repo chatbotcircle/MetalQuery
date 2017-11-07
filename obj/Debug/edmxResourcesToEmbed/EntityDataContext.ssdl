@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="botModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="metal">
+    <Key>
+      <PropertyRef Name="metal_id" />
+    </Key>
+    <Property Name="metal_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="code" Type="nvarchar" MaxLength="5" />
+  </EntityType>
+  <EntityType Name="price">
+    <Key>
+      <PropertyRef Name="price_id" />
+    </Key>
+    <Property Name="price_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="metal_id_fk" Type="int" Nullable="false" />
+    <Property Name="date" Type="datetime" Nullable="false" />
+    <Property Name="price" Type="money" Nullable="false" />
+  </EntityType>
+  <Association Name="FK__price__metal_id___4BAC3F29">
+    <End Role="metal" Type="Self.metal" Multiplicity="1" />
+    <End Role="price" Type="Self.price" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="metal">
+        <PropertyRef Name="metal_id" />
+      </Principal>
+      <Dependent Role="price">
+        <PropertyRef Name="metal_id_fk" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__price__metal_id___4E88ABD4">
+    <End Role="metal" Type="Self.metal" Multiplicity="1" />
+    <End Role="price" Type="Self.price" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="metal">
+        <PropertyRef Name="metal_id" />
+      </Principal>
+      <Dependent Role="price">
+        <PropertyRef Name="metal_id_fk" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="botModelStoreContainer">
+    <EntitySet Name="metal" EntityType="Self.metal" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="price" EntityType="Self.price" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__price__metal_id___4BAC3F29" Association="Self.FK__price__metal_id___4BAC3F29">
+      <End Role="metal" EntitySet="metal" />
+      <End Role="price" EntitySet="price" />
+    </AssociationSet>
+    <AssociationSet Name="FK__price__metal_id___4E88ABD4" Association="Self.FK__price__metal_id___4E88ABD4">
+      <End Role="metal" EntitySet="metal" />
+      <End Role="price" EntitySet="price" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

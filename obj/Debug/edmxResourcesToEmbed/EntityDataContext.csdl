@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="botModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="botEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="metals" EntityType="botModel.metal" />
+    <EntitySet Name="prices" EntityType="botModel.price" />
+    <AssociationSet Name="FK__price__metal_id___4BAC3F29" Association="botModel.FK__price__metal_id___4BAC3F29">
+      <End Role="metal" EntitySet="metals" />
+      <End Role="price" EntitySet="prices" />
+    </AssociationSet>
+    <AssociationSet Name="FK__price__metal_id___4E88ABD4" Association="botModel.FK__price__metal_id___4E88ABD4">
+      <End Role="metal" EntitySet="metals" />
+      <End Role="price" EntitySet="prices" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="metal">
+    <Key>
+      <PropertyRef Name="metal_id" />
+    </Key>
+    <Property Name="metal_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="code" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="prices" Relationship="botModel.FK__price__metal_id___4BAC3F29" FromRole="metal" ToRole="price" />
+  </EntityType>
+  <EntityType Name="price">
+    <Key>
+      <PropertyRef Name="price_id" />
+    </Key>
+    <Property Name="price_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="metal_id_fk" Type="Int32" Nullable="false" />
+    <Property Name="date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="price1" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <NavigationProperty Name="metal" Relationship="botModel.FK__price__metal_id___4BAC3F29" FromRole="price" ToRole="metal" />
+  </EntityType>
+  <Association Name="FK__price__metal_id___4BAC3F29">
+    <End Type="botModel.metal" Role="metal" Multiplicity="1" />
+    <End Type="botModel.price" Role="price" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="metal">
+        <PropertyRef Name="metal_id" />
+      </Principal>
+      <Dependent Role="price">
+        <PropertyRef Name="metal_id_fk" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__price__metal_id___4E88ABD4">
+    <End Type="botModel.metal" Role="metal" Multiplicity="1" />
+    <End Type="botModel.price" Role="price" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="metal">
+        <PropertyRef Name="metal_id" />
+      </Principal>
+      <Dependent Role="price">
+        <PropertyRef Name="metal_id_fk" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

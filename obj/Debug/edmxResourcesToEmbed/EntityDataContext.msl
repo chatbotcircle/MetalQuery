@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="botModelStoreContainer" CdmEntityContainer="botEntities">
+    <EntitySetMapping Name="metals">
+      <EntityTypeMapping TypeName="botModel.metal">
+        <MappingFragment StoreEntitySet="metal">
+          <ScalarProperty Name="code" ColumnName="code" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="metal_id" ColumnName="metal_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="prices">
+      <EntityTypeMapping TypeName="botModel.price">
+        <MappingFragment StoreEntitySet="price">
+          <ScalarProperty Name="price1" ColumnName="price" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="metal_id_fk" ColumnName="metal_id_fk" />
+          <ScalarProperty Name="price_id" ColumnName="price_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
