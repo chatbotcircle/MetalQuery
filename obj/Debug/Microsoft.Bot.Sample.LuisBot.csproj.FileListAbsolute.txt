@@ -75,8 +75,6 @@ C:\Projects\MetalQuery\bin\zh-hans\Microsoft.Bot.Builder.resources.dll
 C:\Projects\MetalQuery\obj\Debug\LuisBot.dll
 C:\Projects\MetalQuery\obj\Debug\LuisBot.pdb
 C:\Projects\MetalQuery\obj\Debug\Microsoft.Bot.Sample.LuisBot.csprojResolveAssemblyReference.cache
-C:\Projects\Bot\MetalQuery\obj\Debug\LuisBot.dll
-C:\Projects\Bot\MetalQuery\obj\Debug\LuisBot.pdb
 C:\Projects\Bot\MetalQuery\bin\roslyn\csc.exe
 C:\Projects\Bot\MetalQuery\bin\roslyn\csc.exe.config
 C:\Projects\Bot\MetalQuery\bin\roslyn\csc.rsp
@@ -151,3 +149,6 @@ C:\Projects\Bot\MetalQuery\bin\nl\Microsoft.Bot.Builder.resources.dll
 C:\Projects\Bot\MetalQuery\bin\pt-BR\Microsoft.Bot.Builder.resources.dll
 C:\Projects\Bot\MetalQuery\bin\ru\Microsoft.Bot.Builder.resources.dll
 C:\Projects\Bot\MetalQuery\bin\zh-hans\Microsoft.Bot.Builder.resources.dll
+C:\Projects\Bot\MetalQuery\obj\Debug\LuisBot.dll
+C:\Projects\Bot\MetalQuery\obj\Debug\LuisBot.pdb
+C:\Projects\Bot\MetalQuery\obj\Debug\Microsoft.Bot.Sample.LuisBot.csprojResolveAssemblyReference.cache

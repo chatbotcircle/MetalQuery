@@ -26,5 +26,7 @@ namespace LuisBot.Responses
         /// The date.
         /// </value>
         public string date { get; set; }
+
+
     }
 }

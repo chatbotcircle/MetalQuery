@@ -75,12 +75,13 @@ namespace LuisBot.Controllers
             switch (luisResponse.intents[0].intent)
             {
                 case "Greeting":                   
-                        responseMessage = "Hi there";
+                        responseMessage = "Hi there, how can I help you?";
                         return responseMessage;
                    
 
                 case "Metal Sales":
                     var showHelp = luisResponse.entities.Any(x => x.type == "help" || x.type == "greeting");
+                    // should check intents not entities
 
                     if (showHelp)
                     {
@@ -91,7 +92,7 @@ namespace LuisBot.Controllers
                     // what is the lowest for gold in 20/10/2017 
                     var metals = luisResponse.entities.Where(x => x.type == "metal").Select(x => x.entity).ToList();
                     var numbers = luisResponse.entities.Where(x => x.type == "builtin.number").Select(x => x.resolution.value).ToList();
-                    var dates = luisResponse.entities.Where(x => x.type == "builtin.datetime.date").Select(x => x.resolution.date).ToList();
+                    var dates = luisResponse.entities.Where(x => x.type == "builtin.datetimeV2.date").Select(x => x.resolution.date).ToList();
                     var parsedDates = dates.Select(x => x.Contains('-') ? DateTime.Parse(x) : new DateTime(int.Parse(x), 1, 1)).ToList();
                     var isPriceOriented = luisResponse.entities.Any(x => x.type == "cost");
                     var requestsLowest = luisResponse.entities.Any(x => x.type == "lowest");
@@ -157,8 +158,17 @@ namespace LuisBot.Controllers
 
                     responseMessage = FormatResult(result.Prices.ToList(), number);
                     break;
+                case "Price":
+                    //what is the price of copper in April 2017?
+                        break;
+                case "Average Price":
+                    //what is average price of gold in 2017?
+                break;
+                case "Help":
+                    responseMessage = "I can help you with finding the price of a metal in a given month, the average price over a year, the highest price and the lowest price.";
+                    break;
                 case "None":
-                    responseMessage = "Sorry, I don't understand, perhaps try something like \"What was sales in 2010\"";
+                    responseMessage = "Sorry, I don't understand, perhaps try something like \"What was the price of gold in April 2017?\"";
                     break;
             }
             return responseMessage;
