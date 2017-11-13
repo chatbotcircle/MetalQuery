@@ -151,4 +151,3 @@ C:\Projects\Bot\MetalQuery\bin\ru\Microsoft.Bot.Builder.resources.dll
 C:\Projects\Bot\MetalQuery\bin\zh-hans\Microsoft.Bot.Builder.resources.dll
 C:\Projects\Bot\MetalQuery\obj\Debug\LuisBot.dll
 C:\Projects\Bot\MetalQuery\obj\Debug\LuisBot.pdb
-C:\Projects\Bot\MetalQuery\obj\Debug\Microsoft.Bot.Sample.LuisBot.csprojResolveAssemblyReference.cache

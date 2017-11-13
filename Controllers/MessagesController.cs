@@ -123,6 +123,7 @@ namespace Microsoft.Bot.Sample.LuisBot.Controllers
                     var metals = luisResponse.entities.Where(x => x.type == "metal").Select(x => x.entity).ToList();
                     var numbers = luisResponse.entities.Where(x => x.type == "builtin.number").Select(x => x.resolution.value).ToList();
                     var dates = luisResponse.entities.Where(x => x.type == "builtin.datetimeV2.date").Select(x => x.resolution.date).ToList();
+                    
                     var parsedDates = dates.Select(x => x.Contains('-') ? DateTime.Parse(x) : new DateTime(int.Parse(x), 1, 1)).ToList();
                     var isPriceOriented = luisResponse.entities.Any(x => x.type == "cost");
                     var requestsLowest = luisResponse.entities.Any(x => x.type == "lowest");
