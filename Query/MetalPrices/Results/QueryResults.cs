@@ -12,5 +12,7 @@ namespace LuisBot.Query.MetalPrices.Results
         public QueryResultType QueryResultType { get; set; }
 
         public IQueryable<price> Prices { get; set; }
+
+        public decimal Average { get; set; }
     }
 }

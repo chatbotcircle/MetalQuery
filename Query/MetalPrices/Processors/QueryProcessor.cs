@@ -2,7 +2,8 @@
 using LinqKit;
 using LuisBot.Query.MetalPrices.Descriptors;
 using LuisBot.Query.MetalPrices.Results;
-
+using System.Collections.Generic;
+using System;
 
 namespace LuisBot.Query.MetalPrices.Processors
 {
@@ -22,7 +23,7 @@ namespace LuisBot.Query.MetalPrices.Processors
             var predicate = PredicateBuilder.False<price>();
 #pragma warning restore 618
 
-            if (!query.IsCostFocused && !query.HasPriceFilter)
+            if (!query.IsCostFocused && !query.HasPriceFilter && !query.HasTimeConstraints)
             {
                 queryResult.SetResultState(QueryResultType.NonCostFocused);
                 return queryResult;
@@ -95,7 +96,7 @@ namespace LuisBot.Query.MetalPrices.Processors
                             .OrderBy(t => t.price1)
                             .Take(query.NumberConstraint);
                 }
-                else
+                else if (query.PriceFilterType == PriceFilterType.Most)
                 {
                     queryResult.Prices =
                         dataContext.prices.AsExpandable()
@@ -103,6 +104,25 @@ namespace LuisBot.Query.MetalPrices.Processors
                             .OrderByDescending(t => t.price1)
                             .Take(query.NumberConstraint);
                 }
+                else if (query.PriceFilterType == PriceFilterType.Average)
+                {
+                    DateTime date = query.TimelineConstraints[0].Date;
+                    string myMetalName = query.MetalNames[0].ToString();
+                    var mymetal = dataContext.metals.Where(x => x.name == myMetalName).Select(x => x.metal_id).SingleOrDefault();
+                    decimal averageprice = 0 ;
+                    if (query.TimeLineConstraintLimit == TimelineConstraintLimit.Year)
+                    {
+                         averageprice = dataContext.prices.Where(r => r.metal_id_fk == mymetal).Average(r => r.price1);
+
+                    }
+                    else if (query.TimeLineConstraintLimit == TimelineConstraintLimit.Month)
+                    {
+                         averageprice = dataContext.prices.Where(r => r.metal_id_fk == mymetal && r.date == date).Average(r => r.price1);
+                    }
+                        queryResult.Average = averageprice;
+                    //queryResult.Prices =  (new List<price> { new price { date = query.TimelineConstraints[0], metal = new metal { }, price1 = averageprice, metal_id_fk = mymetal, price_id = 0 }}).AsQueryable() ;
+                }
+
                 queryResult.SetResultState(QueryResultType.Ok);
                 return queryResult;
             }

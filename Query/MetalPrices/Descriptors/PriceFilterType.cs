@@ -7,6 +7,7 @@
     {
         None,
         Most,
-        Least
+        Least,
+        Average
     }
 }

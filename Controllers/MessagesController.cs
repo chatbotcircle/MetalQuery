@@ -62,34 +62,6 @@ namespace Microsoft.Bot.Sample.LuisBot.Controllers
             return response;
         }
 
-        //private Activity HandleSystemMessage(Activity message)
-        //{
-        //    if (message.Type == ActivityTypes.DeleteUserData)
-        //    {
-        //        // Implement user deletion here
-        //        // If we handle user deletion, return a real message
-        //    }
-        //    else if (message.Type == ActivityTypes.ConversationUpdate)
-        //    {
-        //        // Handle conversation state changes, like members being added and removed
-        //        // Use Activity.MembersAdded and Activity.MembersRemoved and Activity.Action for info
-        //        // Not available in all channels
-        //    }
-        //    else if (message.Type == ActivityTypes.ContactRelationUpdate)
-        //    {
-        //        // Handle add/remove from contact lists
-        //        // Activity.From + Activity.Action represent what happened
-        //    }
-        //    else if (message.Type == ActivityTypes.Typing)
-        //    {
-        //        // Handle knowing tha the user is typing
-        //    }
-        //    else if (message.Type == ActivityTypes.Ping)
-        //    {
-        //    }
-
-        //    return null;
-        //}
 
         /// <summary>
         /// Handles the custom message. The message will have the query information
@@ -99,8 +71,49 @@ namespace Microsoft.Bot.Sample.LuisBot.Controllers
         private static async Task<string> HandleCustomMessage(Activity activity)
         {
             //Get natural language processed by LUIS
+
+
             var luisResponse = await LUISMetalQueryClient.ParseUserInput(activity.Text);
             var responseMessage = string.Empty;
+
+            // what is the lowest for gold in 20/10/2017 
+            int isDateRange = 0;
+            var metals = luisResponse.entities.Where(x => x.type == "metal").Select(x => x.entity).ToList();
+            var numbers = luisResponse.entities.Where(x => x.type == "builtin.number").Select(x => x.resolution.value).ToList();
+
+            List<string> dates = new List<string>();
+            dates = luisResponse.entities.Where(x => x.type == "builtin.datetimeV2.date").Select(x => x.entity).ToList();
+
+            if (dates.Count == 0)
+            {
+                dates = luisResponse.entities.Where(x => x.type == "builtin.datetimeV2.daterange").Select(x => x.entity).ToList();
+                isDateRange = 1;
+            }
+
+            List<DateTime> parsedDates = new List<DateTime>();
+
+
+            if (isDateRange == 0)
+            {
+                parsedDates = dates.Select(x => DateTime.Parse(x)).ToList();
+            }
+            else
+            {
+                parsedDates = dates.Select(x => x.Length > 4  ? DateTime.Parse(x) : new DateTime(int.Parse(x), 1, 1)).ToList();
+            }
+           
+            var isPriceOriented = luisResponse.entities.Any(x => x.type == "cost");
+            var requestsLowest = luisResponse.entities.Any(x => x.type == "lowest");
+            var requestsHighest = luisResponse.entities.Any(x => x.type == "highest");
+            var requestAverage = luisResponse.entities.Any(x => x.type == "average");
+
+            DateTime maxDate;
+            DateTime minDate;
+            using (var dataContext = new botEntities())
+            {
+                maxDate = dataContext.prices.Max(x => x.date);
+                minDate = dataContext.prices.Min(x => x.date);
+            }
 
             switch (luisResponse.intents[0].intent)
             {
@@ -119,23 +132,6 @@ namespace Microsoft.Bot.Sample.LuisBot.Controllers
                         return responseMessage;
                     }
 
-                    // what is the lowest for gold in 20/10/2017 
-                    var metals = luisResponse.entities.Where(x => x.type == "metal").Select(x => x.entity).ToList();
-                    var numbers = luisResponse.entities.Where(x => x.type == "builtin.number").Select(x => x.resolution.value).ToList();
-                    var dates = luisResponse.entities.Where(x => x.type == "builtin.datetimeV2.date").Select(x => x.resolution.date).ToList();
-                    
-                    var parsedDates = dates.Select(x => x.Contains('-') ? DateTime.Parse(x) : new DateTime(int.Parse(x), 1, 1)).ToList();
-                    var isPriceOriented = luisResponse.entities.Any(x => x.type == "cost");
-                    var requestsLowest = luisResponse.entities.Any(x => x.type == "lowest");
-                    var requestsHighest = luisResponse.entities.Any(x => x.type == "highest");
-
-                    DateTime maxDate;
-                    DateTime minDate;
-                    using (var dataContext = new botEntities())
-                    {
-                        maxDate = dataContext.prices.Max(x => x.date);
-                        minDate = dataContext.prices.Min(x => x.date);
-                    }
 
                     if (parsedDates.Any() && parsedDates.All(x => !(minDate <= x && maxDate >= x)))
                     {
@@ -152,6 +148,10 @@ namespace Microsoft.Bot.Sample.LuisBot.Controllers
                     {
                         priceFilter = PriceFilterType.Most;
                     }
+                    else if (requestAverage)
+                    {
+                        priceFilter = PriceFilterType.Average;
+                    }
                     else
                     {
                         priceFilter = PriceFilterType.None;
@@ -163,7 +163,7 @@ namespace Microsoft.Bot.Sample.LuisBot.Controllers
                     var hasMonths = false;
                     if (dates.Any())
                     {
-                        hasMonths = dates.Any(x => x.Contains('-'));
+                        hasMonths = dates.Any(x => x.Contains('-') || x.Length> 4);
                     }
 
                     var number = 1;
@@ -187,14 +187,22 @@ namespace Microsoft.Bot.Sample.LuisBot.Controllers
                     var failedToEvaluate = EvaluateResultStatus(out responseMessage, result.QueryResultType);
                     if (failedToEvaluate) return responseMessage;
 
+                    if(result.Average != 0)
+                    {
+                        if (hasMonths)
+                            responseMessage = string.Format("The average price of {0} for {1} {2} is ${3} ", metals[0], parsedDates[0].ToString("MMMM"),parsedDates[0].Year, result.Average.ToString());
+                        else
+                            responseMessage = string.Format("The average price of {0} for {1} is ${2} ", metals[0], parsedDates[0].Year, result.Average.ToString()); 
+                    }
+                    else
                     responseMessage = FormatResult(result.Prices.ToList(), number);
+               
+
                     break;
                 case "Price":
                     //what is the price of copper in April 2017?
                     break;
-                case "Average Price":
-                    //what is average price of gold in 2017?
-                    break;
+          
                 case "Help":
                     responseMessage = "I can help you with finding the price of a metal in a given month, the average price over a year, the highest price and the lowest price.";
                     break;
